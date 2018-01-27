@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     String provider;
     Geocoder geocoder;
     String firstCity;
+    String cityName;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public double longitude, latitude;
     ArrayList<WeatherModel> weatherModels;
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         search_box.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 search_box.showDropDown();
             }
         });
@@ -152,12 +154,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-                    Intent intent = new Intent(MainActivity.this, WeatherDetailActivity.class);
-                    intent.putExtra(Constants.CITY, search_box.getText().toString());
-                    startActivity(intent);
-
-
-
+                Intent intent = new Intent(MainActivity.this, WeatherDetailActivity.class);
+                firstCity = search_box.getText().toString();
+                search_box.setText("");
+                intent.putExtra(Constants.CITY, cityName);
+                startActivity(intent);
 
 
             }
@@ -187,13 +188,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void updateView(Object object) {
 
-        if(object instanceof WeatherModel) {
+        if (object instanceof WeatherModel) {
             WeatherModel weatherModel = (WeatherModel) object;
             firstCity = weatherModel.city.name;
             weatherModels.add(weatherModel);
 
 
-        }else if(object instanceof WeatherGroupModel) {
+        } else if (object instanceof WeatherGroupModel) {
             WeatherGroupModel weatherGroupModel = (WeatherGroupModel) object;
             for (int i = 0; i < weatherGroupModel.list.size(); i++) {
                 weatherModels.get(i).city.name = weatherGroupModel.list.get(i).name;
@@ -202,8 +203,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
             }
         }
-            saveData(weatherModels);
-            setWeatherItems(weatherModels);
+        saveData(weatherModels);
+        setWeatherItems(weatherModels);
 
         citiesAdapter = new CitiesAdapter(MainActivity.this, this);
         recyclerView.setAdapter(citiesAdapter);
@@ -271,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
 
 
+
                 return;
             }
 
@@ -294,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 onLocationChanged(location);
 
             if (latitude != 0.0 && longitude != 0.0) {
-                mainPresenter = new WeatherPresenterImpl(retrofit, search_box.getText().toString(), String.valueOf(latitude), String.valueOf(longitude), MainActivity.this);
+                mainPresenter = new WeatherPresenterImpl(retrofit, cityName, String.valueOf(latitude), String.valueOf(longitude), MainActivity.this);
 
             } else {
                 Toast.makeText(getBaseContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
@@ -325,14 +327,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void openDetail(WeatherModel weatherModel) {
 
 
-
         Intent intent = new Intent(MainActivity.this, WeatherDetailActivity.class);
         intent.putExtra(Constants.CITY, weatherModel.city.name);
 
         startActivity(intent);
     }
-
-
 
 
     public ArrayList<WeatherModel> getSavedData() {

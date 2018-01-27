@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,40 +51,22 @@ public class WeatherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
 
         final Holder holder = (Holder) viewHolder;
-
         holder.degree.setText(list.get(position).main.temp_max + "°C");
         holder.description.setText(list.get(position).weather.get(0).description);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = dateFormatter.parse(list.get(position).dt_txt);
+        } catch (ParseException e) {
 
+        }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis((long) list.get(position).dt);
-        int dayInt = (calendar.get(calendar.DAY_OF_WEEK));
-        String hour= String.valueOf(calendar.get(calendar.getTime().getHours()));
-        String dayString="";
-
-        switch (dayInt) {
-            case Calendar.MONDAY:
-                dayString= "Monday";
-            case Calendar.TUESDAY:
-                dayString= "Tuesday";
-            case Calendar.WEDNESDAY:
-                dayString= "Wednesday";
-            case Calendar.THURSDAY:
-                dayString= "Thursday";
-            case Calendar.FRIDAY:
-                dayString= "Friday";
-            case Calendar.SATURDAY:
-                dayString= "Saturday";
-            case Calendar.SUNDAY:
-                dayString= "Sunday";
-
-
-
-    }
-
-        holder.day.setText(dayString);
-        holder.hour.setText(hour);
-
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("h:mm a");
+        SimpleDateFormat dayFormat = new SimpleDateFormat("E", Locale.getDefault());
+        String displayTimeValue = timeFormatter.format(date);
+        String displayDayValue = dayFormat.format(date);
+        holder.day.setText(displayDayValue);
+        holder.hour.setText(displayTimeValue);
         String url = "http://openweathermap.org/img/w/" + list.get(position).weather.get(0).icon + ".png";
         holder.icon.setBackground(null);
         Picasso.with(context).load(url)
@@ -96,8 +79,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return list.size();
     }
 
-
-    //holder for item row
     public class Holder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.icon)

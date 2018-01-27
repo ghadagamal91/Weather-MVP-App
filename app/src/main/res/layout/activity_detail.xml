@@ -106,8 +106,23 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/colorWhite" />
 
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+
+            android:layout_marginRight="5dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorPrimaryDark"
+            android:indeterminateTintMode="src_atop" />
+
         <RelativeLayout
 
+            android:id="@+id/header"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
@@ -135,7 +150,6 @@
                 android:gravity="right" />
 
 
-
         </RelativeLayout>
 
         <RelativeLayout
@@ -150,7 +164,6 @@
                 android:background="@android:color/transparent"
                 android:orientation="horizontal" />
         </RelativeLayout>
-
 
 
     </LinearLayout>
