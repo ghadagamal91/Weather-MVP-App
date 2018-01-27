@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Weather Forecast</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="search_hint">City Search..</string>
+    <string name="city">city</string>
+    <string name="current_degree_txt">Current Degree</string>
+    <string name="current_degree">9.07°C</string>
+    <string name="celsius">°C</string>
+    <string name="daily">Hourly</string>
+    <string name="clear_sky">clear sky</string>
+    <string name="cloud">cloud</string>
+    <string name="rain">rain</string>
+    <string name="snow">snow</string>
+    <string name="alert_Message">Add the City To Main Screen?</string>
+    <string name="connection_error">Connection Error</string>
+
+
+</resources>

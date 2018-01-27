@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="capital_cities">
+        <item>Kabul</item>
+        <item>Tirana</item>
+        <item>Algiers</item>
+        <item>Andorra la Vella</item>
+        <item>Luanda</item>
+        <item>Buenos Aires</item>
+        <item>Yerevan</item>
+        <item>Canberra</item>
+        <item>Vienna</item>
+        <item>Baku</item>
+        <item>Nassau</item>
+        <item>Manama</item>
+        <item>Dhaka</item>
+        <item>Bridgetown</item>
+        <item>Minsk</item>
+        <item>Brussels</item>
+        <item>Belmopan</item>
+        <item>Porto-Novo</item>
+        <item>Thimphu</item>
+        <item>Sucre</item>
+        <item>La Paz</item>
+        <item>Sarajevo</item>
+        <item>Gaborone</item>
+        <item>Brasilia</item>
+        <item>Bandar Seri Begawan</item>
+        <item>Sofia</item>
+        <item>Ouagadougou</item>
+        <item>Bujumbura</item>
+        <item>Phnom Penh</item>
+        <item>Yaounde</item>
+        <item>Ottawa</item>
+        <item>Praia</item>
+        <item>Bangui</item>
+        <item>N'Djamena</item>
+        <item>Santiago</item>
+        <item>Beijing</item>
+        <item>Bogota</item>
+        <item>Moroni</item>
+        <item>Brazzaville</item>
+        <item>Kinshasa</item>
+        <item>San Jose</item>
+        <item>Yamoussoukro</item>
+        <item>Abidjan</item>
+        <item>Zagreb</item>
+        <item>Havana</item>
+        <item>Nicosia</item>
+        <item>Prague</item>
+        <item>Copenhagen</item>
+        <item>Djibouti</item>
+        <item>Roseau</item>
+        <item>Santo Domingo</item>
+        <item>Dili</item>
+        <item>Quito</item>
+        <item>Cairo</item>
+        <item>San Salvador</item>
+        <item>Malabo</item>
+        <item>Asmara</item>
+        <item>Tallinn</item>
+        <item>Addis Ababa</item>
+        <item>Suva</item>
+        <item>Helsinki</item>
+        <item>Paris</item>
+        <item>Libreville</item>
+        <item>Banjul</item>
+        <item>Tbilisi</item>
+        <item>Berlin</item>
+        <item>Accra</item>
+        <item>Athens</item>
+        <item>Saint George's</item>
+        <item>Guatemala City</item>
+        <item>Conakry</item>
+        <item>Bissau</item>
+        <item>Georgetown</item>
+        <item>Port-au-Prince</item>
+        <item>Tegucigalpa</item>
+        <item>Budapest</item>
+        <item>Reykjavik</item>
+        <item>New Delhi</item>
+        <item>Jakarta</item>
+        <item>Tehran</item>
+        <item>Baghdad</item>
+        <item>Dublin</item>
+        <item>Jerusalem</item>
+        <item>Rome</item>
+        <item>Kingston</item>
+        <item>Tokyo</item>
+        <item>Amman</item>
+        <item>Astana</item>
+        <item>Nairobi</item>
+        <item>Tarawa Atoll</item>
+        <item>Pyongyang</item>
+        <item>Seoul</item>
+        <item>Pristina</item>
+        <item>Kuwait City</item>
+        <item>Bishkek</item>
+        <item>Vientiane</item>
+        <item>Riga</item>
+        <item>Beirut</item>
+        <item>Maseru</item>
+        <item>Monrovia</item>
+        <item>Tripoli</item>
+        <item>Vaduz</item>
+        <item>Vilnius</item>
+        <item>Luxembourg</item>
+        <item>Skopje</item>
+        <item>Antananarivo</item>
+        <item>Lilongwe</item>
+        <item>Kuala Lumpur</item>
+        <item>Male</item>
+        <item>Bamako</item>
+        <item>Valletta</item>
+        <item>Majuro</item>
+        <item>Nouakchott</item>
+        <item>Port Louis</item>
+        <item>Mexico City</item>
+        <item>Chisinau</item>
+        <item>Monaco</item>
+        <item>Ulaanbaatar</item>
+        <item>Podgorica</item>
+        <item>Rabat</item>
+        <item>Maputo</item>
+        <item>Burma</item>
+        <item>Yangon</item>
+        <item>Naypyidaw</item>
+        <item>Windhoek</item>
+        <item>Kathmandu</item>
+        <item>Amsterdam</item>
+        <item>Wellington</item>
+        <item>Managua</item>
+        <item>Niamey</item>
+        <item>Abuja</item>
+        <item>Oslo</item>
+        <item>Muscat</item>
+        <item>Islamabad</item>
+        <item>Melekeok</item>
+        <item>Panama City</item>
+        <item>Port Moresby</item>
+        <item>Asuncion</item>
+        <item>Lima</item>
+        <item>Manila</item>
+        <item>Warsaw</item>
+        <item>Lisbon</item>
+        <item>Doha</item>
+        <item>Bucharest</item>
+        <item>Moscow</item>
+        <item>Kigali</item>
+        <item>Basseterre</item>
+        <item>Castries</item>
+        <item>Kingstown</item>
+        <item>Apia</item>
+        <item>San Marino</item>
+        <item>Sao Tome</item>
+        <item>Riyadh</item>
+        <item>Dakar</item>
+        <item>Belgrade</item>
+        <item>Victoria</item>
+        <item>Freetown</item>
+        <item>Singapore</item>
+        <item>Bratislava</item>
+        <item>Ljubljana</item>
+        <item>Honiara</item>
+        <item>Mogadishu</item>
+        <item>Pretoria</item>
+        <item>Juba</item>
+        <item>Madrid</item>
+        <item>Colombo</item>
+        <item>Khartoum</item>
+        <item>Paramaribo</item>
+        <item>Mbabane</item>
+        <item>Stockholm</item>
+        <item>Bern</item>
+        <item>Damascus</item>
+        <item>Taipei</item>
+        <item>Dushanbe</item>
+        <item>Dodoma</item>
+        <item>Bangkok</item>
+        <item>Lome</item>
+        <item>Tobago</item>
+        <item>Tunis</item>
+        <item>Ankara</item>
+        <item>Ashgabat</item>
+        <item>Kampala</item>
+        <item>Kyiv</item>
+        <item>Abu Dhabi</item>
+        <item>London</item>
+        <item>Washington</item>
+        <item>Montevideo</item>
+        <item>Tashkent</item>
+        <item>Port-Vila</item>
+        <item>Vatican City</item>
+        <item>Caracas</item>
+        <item>Hanoi</item>
+        <item>Sanaa</item>
+        <item>Lusaka</item>
+        <item>Harare</item>
+
+
+    </string-array>
+
+    <integer-array name="images">
+        <item>@mipmap/img_beaches_ocean</item>
+        <item>@mipmap/img_beaches_paradise</item>
+        <item>@mipmap/img_beaches_sky</item>
+        <item>@mipmap/img_beaches_waves</item>
+        <item>@mipmap/img_cloud_sunset</item>
+        <item>@mipmap/img_flowers</item>
+        <item>@mipmap/img_flowers2</item>
+        <item>@mipmap/img_image1</item>
+        <item>@mipmap/img_moon</item>
+        <item>@mipmap/img_rain</item>
+        <item>@mipmap/img_snow</item>
+        <item>@mipmap/img_snow2</item>
+        <item>@mipmap/img_snow3</item>
+        <item>@mipmap/img_snow4</item>
+        <item>@mipmap/img_snow5</item>
+        <item>@mipmap/img_stars</item>
+        <item>@mipmap/img_stormy</item>
+        <item>@mipmap/img_winter</item>
+
+
+    </integer-array>
+
+    <integer-array name="images_clear_sky">
+
+
+        <item>@mipmap/img_beaches_waves</item>
+        <item>@mipmap/img_flowers</item>
+        <item>@mipmap/img_moon</item>
+        <item>@mipmap/img_stars</item>
+
+
+
+    </integer-array>
+
+    <integer-array name="images_cloudy">
+        <item>@mipmap/img_beaches_ocean</item>
+        <item>@mipmap/img_beaches_paradise</item>
+        <item>@mipmap/img_beaches_sky</item>
+        <item>@mipmap/img_cloud_sunset</item>
+        <item>@mipmap/img_flowers2</item>
+        <item>@mipmap/img_image1</item>
+        <item>@mipmap/img_stormy</item>
+
+
+
+    </integer-array>
+
+    <integer-array name="images_snow">
+
+        <item>@mipmap/img_snow</item>
+        <item>@mipmap/img_snow2</item>
+        <item>@mipmap/img_snow3</item>
+        <item>@mipmap/img_snow4</item>
+        <item>@mipmap/img_snow5</item>
+        <item>@mipmap/img_winter</item>
+
+
+    </integer-array>
+    <integer-array name="images_rain">
+
+        <item>@mipmap/img_rain</item>
+        <item>@mipmap/img_stormy</item>
+        <item>@mipmap/img_winter</item>
+
+
+    </integer-array>
+
+</resources>
