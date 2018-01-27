@@ -10,7 +10,6 @@ import java.util.ArrayList;
 public class CountriesModel implements Serializable {
 
 
-
     public ArrayList<Countries> countries;
 
     public class Countries implements Serializable {

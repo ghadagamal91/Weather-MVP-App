@@ -1,11 +1,15 @@
 package com.example.abdelhaf.weather.presentation.ui.activities;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -21,6 +25,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.Manifest;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -32,6 +37,7 @@ import com.example.abdelhaf.weather.App;
 import com.example.abdelhaf.weather.R;
 import com.example.abdelhaf.weather.domain.controllers.Controller;
 import com.example.abdelhaf.weather.domain.controllers.communicator.WeatherCommunicator;
+import com.example.abdelhaf.weather.domain.models.WeatherGroupModel;
 import com.example.abdelhaf.weather.domain.models.WeatherModel;
 import com.example.abdelhaf.weather.presentation.presenters.MainPresenter;
 import com.example.abdelhaf.weather.presentation.presenters.impl.WeatherGroupPresenterImpl;
@@ -56,7 +62,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity implements LocationListener, MainPresenter.PresenterCallBack,WeatherCommunicator {
+public class MainActivity extends AppCompatActivity implements LocationListener, MainPresenter.PresenterCallBack, WeatherCommunicator {
     private Unbinder unbinder;
     MainPresenter mainPresenter;
     @Inject
@@ -77,11 +83,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     Geocoder geocoder;
     String firstCity;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    public double longitude,latitude;
-    ArrayList<WeatherModel>weatherModels;
+    public double longitude, latitude;
+    ArrayList<WeatherModel> weatherModels;
     private RecyclerView.LayoutManager mLayoutManager;
     CitiesAdapter citiesAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,13 +100,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mLayoutManager = new LinearLayoutManager(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         recyclerView.setLayoutManager(mLayoutManager);
-//        citiesAdapter = new CitiesAdapter(MainActivity.this,this);
-//        recyclerView.setAdapter(citiesAdapter);
-
-        weatherModels=new ArrayList<>();
-        weatherModels=getSavedData();
-        String x=sharedPreferences.getString(Constants.MODEL0,"");
-        if(sharedPreferences.getString(Constants.MODEL0,"").length()==0) {
+        weatherModels = new ArrayList<>();
+        weatherModels = getSavedData();
+        String x = sharedPreferences.getString(Constants.MODEL0, "");
+        if (sharedPreferences.getString(Constants.MODEL0, "").length() == 0) {
             boolean check = checkLocationPermission();
             if (check) {
                 callLocationService();
@@ -109,23 +111,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 firstCity = "London";
             }
 
-            sharedPreferences.edit().putString(Constants.ISFIRSTRUN,"false").commit();
-        }else
-        {
+            sharedPreferences.edit().putString(Constants.ISFIRSTRUN, "false").commit();
+        } else {
 
 
-            String url_part=String.valueOf(weatherModels.get(0).city.id);
-            for (int i=1;i<weatherModels.size()-1;i++)
-            {
-                url_part=url_part+","+weatherModels.get(i).city.id;
+            String url_part = "";
+            for (int i = 0; i < weatherModels.size(); i++) {
+                url_part = url_part + "," + weatherModels.get(i).city.id;
 
             }
+            url_part = url_part.replaceFirst(",", "");
 
-            mainPresenter = new WeatherGroupPresenterImpl(retrofit, url_part, MainActivity.this);
+            if (weatherModels.size() == 1) {
+                mainPresenter = new WeatherPresenterImpl(retrofit, weatherModels.get(0).city.name, null, null, MainActivity.this);
+
+            } else
+                mainPresenter = new WeatherGroupPresenterImpl(retrofit, url_part, MainActivity.this);
 
         }
         search_box.setThreshold(1);
-        //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, capital_cities);
         search_box.setAdapter(new CustomAdapter<String>(this.getApplication(), android.R.layout.simple_spinner_dropdown_item, capital_cities));
 
         search_box.setOnClickListener(new View.OnClickListener() {
@@ -148,65 +152,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-
-                ArrayList<WeatherModel> tmpModels=getSavedData();
-                weatherModels=tmpModels;
-                boolean exist=false;
-
-                for(int i=0;i<tmpModels.size();i++)
-                {
-                    if(tmpModels.get(i).city.name.equalsIgnoreCase(search_box.getText().toString()))
-                        exist=true;
-                }
-                if(tmpModels.size()<5&&exist==false)
-                {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setCancelable(false);
-                    builder.setMessage(getText(R.string.alert_Message));
-                    builder.setPositiveButton(getText(R.string.ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            //
-                            mainPresenter = new WeatherPresenterImpl(retrofit, search_box.getText().toString(),null,null, MainActivity.this);
-
-                           if(weatherModels.size()!=0)
-                           {
-                                Intent intent = new Intent(MainActivity.this, WeatherDetailActivity.class);
-                                intent.putExtra(Constants.WEATHER_MODEL, weatherModels.get(weatherModels.size() - 1));
-                                startActivity(intent);
-                            }
-                            else
-                           {
-                               Toast.makeText(getBaseContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
-                           }
-                        }
-                    })
-                            .setNegativeButton(getText(R.string.cancel) , new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent = new Intent(MainActivity.this,WeatherDetailActivity.class);
-                                    intent.putExtra(Constants.CITY,search_box.getText().toString());
-                                    startActivity(intent);
-
-                                }
-                            });
-
-                    // Create the AlertDialog object and return it
-                    builder.create().show();
-                }else
-                {
-                    Intent intent = new Intent(MainActivity.this,WeatherDetailActivity.class);
-                    intent.putExtra(Constants.CITY,search_box.getText().toString());
+                    Intent intent = new Intent(MainActivity.this, WeatherDetailActivity.class);
+                    intent.putExtra(Constants.CITY, search_box.getText().toString());
                     startActivity(intent);
-                }
+
+
+
 
 
             }
         });
 
 
-        Toast.makeText(getBaseContext(), firstCity, Toast.LENGTH_LONG).show();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateList();
     }
 
     @Override
@@ -217,25 +180,33 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void showConnectionError(Throwable throwable) {
 
+        Toast.makeText(getBaseContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
         handleOfflineMode();
     }
 
     @Override
     public void updateView(Object object) {
-        WeatherModel weatherModel = (WeatherModel) object;
-        ArrayList<String> list = new ArrayList<String>();
 
-        firstCity=weatherModel.city.name;
-        weatherModels.add(weatherModel);
-        saveData(weatherModels);
+        if(object instanceof WeatherModel) {
+            WeatherModel weatherModel = (WeatherModel) object;
+            firstCity = weatherModel.city.name;
+            weatherModels.add(weatherModel);
 
-        setWeatherItems(weatherModels);
-        citiesAdapter = new CitiesAdapter(MainActivity.this,this);
+
+        }else if(object instanceof WeatherGroupModel) {
+            WeatherGroupModel weatherGroupModel = (WeatherGroupModel) object;
+            for (int i = 0; i < weatherGroupModel.list.size(); i++) {
+                weatherModels.get(i).city.name = weatherGroupModel.list.get(i).name;
+                weatherModels.get(i).list.get(0).main.temp = weatherGroupModel.list.get(i).main.temp;
+                weatherModels.get(i).list.get(0).weather.get(0).icon = weatherGroupModel.list.get(i).weather.get(0).icon;
+
+            }
+        }
+            saveData(weatherModels);
+            setWeatherItems(weatherModels);
+
+        citiesAdapter = new CitiesAdapter(MainActivity.this, this);
         recyclerView.setAdapter(citiesAdapter);
-
-
-        Toast.makeText(getBaseContext(), firstCity, Toast.LENGTH_LONG).show();
-        String x = "xyz";
 
     }
 
@@ -243,8 +214,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onLocationChanged(Location location) {
 
 
-        longitude=location.getLongitude();
-        latitude=location.getLatitude();
+        longitude = location.getLongitude();
+        latitude = location.getLatitude();
 
 
     }
@@ -270,10 +241,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 != PackageManager.PERMISSION_GRANTED) {
 
 
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
+            // No explanation needed, we can request the permission.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_LOCATION);
 
             return false;
         } else {
@@ -291,13 +262,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     callLocationService();
-                    sharedPreferences.edit().putString(Constants.PERMISSION_GRANTED,"PERMISSION_GRANTED").commit();
-                }
+                    sharedPreferences.edit().putString(Constants.PERMISSION_GRANTED, "PERMISSION_GRANTED").commit();
+                } else {
 
-                 else {
-
-                    firstCity="London";
-                    mainPresenter = new WeatherPresenterImpl(retrofit, firstCity,null,null, MainActivity.this);
+                    firstCity = "London";
+                    mainPresenter = new WeatherPresenterImpl(retrofit, firstCity, null, null, MainActivity.this);
 
                 }
 
@@ -307,28 +276,32 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         }
     }
-public void callLocationService()
-{
 
-    if (ContextCompat.checkSelfPermission(this,
-            Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
-        List<Address>  addresses;
-        Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
-        Location location = locationManager.getLastKnownLocation(provider);
-        geocoder = new Geocoder(this, Locale.getDefault());
-        locationManager.requestLocationUpdates(provider, 20000, 1, this);
+    public void callLocationService() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            List<Address> addresses;
+            Criteria criteria = new Criteria();
+            provider = locationManager.getBestProvider(criteria, false);
+            Location location = locationManager.getLastKnownLocation(provider);
+            geocoder = new Geocoder(this, Locale.getDefault());
+            locationManager.requestLocationUpdates(provider, 20000, 1, this);
 
 
-        if (location != null)
-            onLocationChanged(location);
+            if (location != null)
+                onLocationChanged(location);
 
-        if(latitude!=0.0&&longitude!=0.0)
-        mainPresenter = new WeatherPresenterImpl(retrofit, search_box.getText().toString(),String.valueOf(latitude),String.valueOf(longitude), MainActivity.this);
+            if (latitude != 0.0 && longitude != 0.0) {
+                mainPresenter = new WeatherPresenterImpl(retrofit, search_box.getText().toString(), String.valueOf(latitude), String.valueOf(longitude), MainActivity.this);
 
+            } else {
+                Toast.makeText(getBaseContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+            }
+        }
     }
-}
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -345,111 +318,97 @@ public void callLocationService()
     @Override
     public void setWeatherItems(ArrayList<WeatherModel> weatherItems) {
 
-        this.weatherModels=weatherItems;
+        this.weatherModels = weatherItems;
     }
 
     @Override
     public void openDetail(WeatherModel weatherModel) {
 
-        Intent intent = new Intent(MainActivity.this,WeatherDetailActivity.class);
-        if(weatherModel.list!=null&&weatherModel.list.size()>0) {
-            intent.putExtra(Constants.WEATHER_MODEL, weatherModel);
-        }else
-        {
-            intent.putExtra(Constants.CITY,weatherModel.city.name);
-        }
+
+
+        Intent intent = new Intent(MainActivity.this, WeatherDetailActivity.class);
+        intent.putExtra(Constants.CITY, weatherModel.city.name);
+
         startActivity(intent);
     }
 
-    @Override
-    public void deleteModel(WeatherModel weatherModel) {
 
-        weatherModels.remove(weatherModel);
 
-        saveData(weatherModels);
 
-    }
-
-//    public void saveDataCity1(WeatherModel weatherModel)
-//    {
-//
-//
-//            sharedPreferences.edit().putString(Constants.CITY1,weatherModel.city.name).commit();
-//            sharedPreferences.edit().putString(Constants.ID1,String.valueOf(weatherModel.city.id)).commit();
-//            sharedPreferences.edit().putString(Constants.DESCRIPTION1,weatherModel.list.get(0).weather.get(0).description).commit();
-//            sharedPreferences.edit().putString(Constants.HUMIDITY1,String.valueOf(weatherModel.list.get(0).main.humidity)).commit();
-//            sharedPreferences.edit().putString(Constants.TEMP1,String.valueOf(weatherModel.list.get(0).main.temp)).commit();
-//            sharedPreferences.edit().putString(Constants.SPEED1,String.valueOf(weatherModel.list.get(0).wind.speed)).commit();
-//
-//
-//    }
-
-    public ArrayList<WeatherModel> getSavedData()
-    {
-        ArrayList<WeatherModel> tmpModels= new ArrayList<>();
-        String json=null;
+    public ArrayList<WeatherModel> getSavedData() {
+        ArrayList<WeatherModel> tmpModels = new ArrayList<>();
+        String json = "";
         Gson gson = new Gson();
-         json = sharedPreferences.getString(Constants.MODEL0, null);
-        if(json!=null) {
+        json = sharedPreferences.getString(Constants.MODEL0, null);
+        if (json != null && json.length() > 0) {
             WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
             tmpModels.add(weatherModel);
         }
 
-        json = sharedPreferences.getString(Constants.MODEL0, null);
-        if(json!=null) {
-            WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
-            tmpModels.add(weatherModel);
-        }
 
         json = sharedPreferences.getString(Constants.MODEL1, null);
-        if(json!=null) {
+        if (json != null && json.length() > 0) {
             WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
             tmpModels.add(weatherModel);
         }
 
         json = sharedPreferences.getString(Constants.MODEL2, null);
-        if(json!=null) {
+        if (json != null && json.length() > 0) {
             WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
             tmpModels.add(weatherModel);
         }
 
         json = sharedPreferences.getString(Constants.MODEL3, null);
-        if(json!=null) {
+        if (json != null && json.length() > 0) {
             WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
             tmpModels.add(weatherModel);
         }
-        return  tmpModels;
+
+        json = sharedPreferences.getString(Constants.MODEL4, null);
+        if (json != null && json.length() > 0) {
+            WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
+            tmpModels.add(weatherModel);
+        }
+
+        return tmpModels;
     }
 
-    public void saveData(ArrayList<WeatherModel> list)
-    {
+    public void saveData(ArrayList<WeatherModel> list) {
         Gson gson = new Gson();
 
 
-        for(int k=0;k<5;k++)
-        {
-            sharedPreferences.edit().putString("MODEL"+k,"").commit();
+        for (int k = 0; k < 5; k++) {
+            sharedPreferences.edit().putString("MODEL" + k, "").commit();
         }
-        for(int i=0;i<list.size();i++)
-        {
+        for (int i = 0; i < list.size(); i++) {
             String json = gson.toJson(list.get(i));
-            sharedPreferences.edit().putString("MODEL"+i,json).commit();
+            sharedPreferences.edit().putString("MODEL" + i, json).commit();
 
         }
     }
 
 
-    public void handleOfflineMode()
-    {
+    public void handleOfflineMode() {
 
-            ArrayList<WeatherModel> savedWeatherData = getSavedData();
-            if(savedWeatherData.size()>0)
-            {
+        ArrayList<WeatherModel> savedWeatherData = getSavedData();
+        if (savedWeatherData.size() > 0) {
             setWeatherItems(savedWeatherData);
-                citiesAdapter = new CitiesAdapter(MainActivity.this,this);
-                recyclerView.setAdapter(citiesAdapter);
+            citiesAdapter = new CitiesAdapter(MainActivity.this, this);
+            recyclerView.setAdapter(citiesAdapter);
         }
 
     }
+
+    public void updateList() {
+
+        ArrayList<WeatherModel> savedWeatherData = getSavedData();
+        if (savedWeatherData.size() > 0) {
+            setWeatherItems(savedWeatherData);
+            citiesAdapter = new CitiesAdapter(MainActivity.this, this);
+            recyclerView.setAdapter(citiesAdapter);
+        }
+
+    }
+
 }
 

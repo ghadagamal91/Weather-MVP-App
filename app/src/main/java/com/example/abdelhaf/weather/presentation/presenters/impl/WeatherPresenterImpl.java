@@ -1,4 +1,5 @@
 package com.example.abdelhaf.weather.presentation.presenters.impl;
+
 import com.example.abdelhaf.weather.domain.interactors.base.ResponseCallback;
 import com.example.abdelhaf.weather.domain.interactors.impl.WeatherInteractorImpl;
 import com.example.abdelhaf.weather.presentation.presenters.MainPresenter;
@@ -10,9 +11,9 @@ public class WeatherPresenterImpl implements MainPresenter, ResponseCallback.MYC
     MainPresenter.PresenterCallBack presenterCallBack;
     ResponseCallback responseCallback;
 
-    public WeatherPresenterImpl(Retrofit retrofit, String city,String lat,String lon, PresenterCallBack presenterCallBack) {
+    public WeatherPresenterImpl(Retrofit retrofit, String city, String lat, String lon, PresenterCallBack presenterCallBack) {
         this.presenterCallBack = presenterCallBack;
-        responseCallback = new WeatherInteractorImpl(retrofit,city,lat,lon, this, presenterCallBack);
+        responseCallback = new WeatherInteractorImpl(retrofit, city, lat, lon, this, presenterCallBack);
     }
 
 

@@ -6,6 +6,7 @@ import com.example.abdelhaf.weather.domain.controllers.Controller;
 import com.example.abdelhaf.weather.domain.interactors.base.DefaultSubscriber;
 import com.example.abdelhaf.weather.domain.interactors.base.ResponseCallback;
 import com.example.abdelhaf.weather.domain.interactors.base.UseCase;
+import com.example.abdelhaf.weather.domain.models.WeatherGroupModel;
 import com.example.abdelhaf.weather.domain.models.WeatherModel;
 import com.example.abdelhaf.weather.presentation.presenters.MainPresenter;
 
@@ -18,7 +19,8 @@ public class WeatherGroupInteractorImpl extends UseCase implements ResponseCallb
     Controller.Weather weatherServices;
     String ids;
     SharedPreferences pref;
-String unit="metric";
+    String unit = "metric";
+
     public WeatherGroupInteractorImpl(Retrofit retrofit, String ids, MYCallback mCallback, MainPresenter.PresenterCallBack presenterCallBack) {
         this.mCallback = mCallback;
         this.presenterCallBack = presenterCallBack;
@@ -34,14 +36,13 @@ String unit="metric";
     protected Observable buildUseCaseObservable() {
         presenterCallBack.showLoading(true);
 
-            return this.weatherServices.getGroupWeatherServices(ids,unit);
+        return this.weatherServices.getGroupWeatherServices(ids, unit);
 
 
     }
 
 
-
-    private final class WeatherSubscriber extends DefaultSubscriber<WeatherModel> {
+    private final class WeatherSubscriber extends DefaultSubscriber<WeatherGroupModel> {
 
         @Override
         public void onCompleted() {
@@ -56,7 +57,7 @@ String unit="metric";
         }
 
         @Override
-        public void onNext(WeatherModel weatherModel) {
+        public void onNext(WeatherGroupModel weatherModel) {
 
             mCallback.success(weatherModel);
         }

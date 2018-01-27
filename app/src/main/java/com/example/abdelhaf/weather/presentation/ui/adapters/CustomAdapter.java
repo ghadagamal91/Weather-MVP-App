@@ -74,13 +74,15 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
     private ArrayList<T> mOriginalValues;
     private ArrayFilter mFilter;
 
-    /** Layout inflater used for {@link #getDropDownView(int, View, ViewGroup)}. */
+    /**
+     * Layout inflater used for {@link #getDropDownView(int, View, ViewGroup)}.
+     */
     private LayoutInflater mDropDownInflater;
 
     /**
      * Constructor
      *
-     * @param context The current context.
+     * @param context  The current context.
      * @param resource The resource ID for a layout file containing a TextView to use when
      *                 instantiating views.
      */
@@ -91,23 +93,23 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
     /**
      * Constructor
      *
-     * @param context The current context.
-     * @param resource The resource ID for a layout file containing a layout to use when
-     *                 instantiating views.
+     * @param context            The current context.
+     * @param resource           The resource ID for a layout file containing a layout to use when
+     *                           instantiating views.
      * @param textViewResourceId The id of the TextView within the layout resource to be populated
      */
     public CustomAdapter(@NonNull Context context, @LayoutRes int resource,
-                        @IdRes int textViewResourceId) {
+                         @IdRes int textViewResourceId) {
         this(context, resource, textViewResourceId, new ArrayList<>());
     }
 
     /**
      * Constructor
      *
-     * @param context The current context.
+     * @param context  The current context.
      * @param resource The resource ID for a layout file containing a TextView to use when
      *                 instantiating views.
-     * @param objects The objects to represent in the ListView.
+     * @param objects  The objects to represent in the ListView.
      */
     public CustomAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull T[] objects) {
         this(context, resource, 0, Arrays.asList(objects));
@@ -116,46 +118,46 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
     /**
      * Constructor
      *
-     * @param context The current context.
-     * @param resource The resource ID for a layout file containing a layout to use when
-     *                 instantiating views.
+     * @param context            The current context.
+     * @param resource           The resource ID for a layout file containing a layout to use when
+     *                           instantiating views.
      * @param textViewResourceId The id of the TextView within the layout resource to be populated
-     * @param objects The objects to represent in the ListView.
+     * @param objects            The objects to represent in the ListView.
      */
     public CustomAdapter(@NonNull Context context, @LayoutRes int resource,
-                        @IdRes int textViewResourceId, @NonNull T[] objects) {
+                         @IdRes int textViewResourceId, @NonNull T[] objects) {
         this(context, resource, textViewResourceId, Arrays.asList(objects));
     }
 
     /**
      * Constructor
      *
-     * @param context The current context.
+     * @param context  The current context.
      * @param resource The resource ID for a layout file containing a TextView to use when
      *                 instantiating views.
-     * @param objects The objects to represent in the ListView.
+     * @param objects  The objects to represent in the ListView.
      */
     public CustomAdapter(@NonNull Context context, @LayoutRes int resource,
-                        @NonNull List<T> objects) {
+                         @NonNull List<T> objects) {
         this(context, resource, 0, objects);
     }
 
     /**
      * Constructor
      *
-     * @param context The current context.
-     * @param resource The resource ID for a layout file containing a layout to use when
-     *                 instantiating views.
+     * @param context            The current context.
+     * @param resource           The resource ID for a layout file containing a layout to use when
+     *                           instantiating views.
      * @param textViewResourceId The id of the TextView within the layout resource to be populated
-     * @param objects The objects to represent in the ListView.
+     * @param objects            The objects to represent in the ListView.
      */
     public CustomAdapter(@NonNull Context context, @LayoutRes int resource,
-                        @IdRes int textViewResourceId, @NonNull List<T> objects) {
+                         @IdRes int textViewResourceId, @NonNull List<T> objects) {
         this(context, resource, textViewResourceId, objects, false);
     }
 
     private CustomAdapter(@NonNull Context context, @LayoutRes int resource,
-                         @IdRes int textViewResourceId, @NonNull List<T> objects, boolean objsFromResources) {
+                          @IdRes int textViewResourceId, @NonNull List<T> objects, boolean objsFromResources) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mResource = mDropDownResource = resource;
@@ -186,14 +188,14 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
      *
      * @param collection The Collection to add at the end of the array.
      * @throws UnsupportedOperationException if the <tt>addAll</tt> operation
-     *         is not supported by this list
-     * @throws ClassCastException if the class of an element of the specified
-     *         collection prevents it from being added to this list
-     * @throws NullPointerException if the specified collection contains one
-     *         or more null elements and this list does not permit null
-     *         elements, or if the specified collection is null
-     * @throws IllegalArgumentException if some property of an element of the
-     *         specified collection prevents it from being added to this list
+     *                                       is not supported by this list
+     * @throws ClassCastException            if the class of an element of the specified
+     *                                       collection prevents it from being added to this list
+     * @throws NullPointerException          if the specified collection contains one
+     *                                       or more null elements and this list does not permit null
+     *                                       elements, or if the specified collection is null
+     * @throws IllegalArgumentException      if some property of an element of the
+     *                                       specified collection prevents it from being added to this list
      */
     public void addAll(@NonNull Collection<? extends T> collection) {
         synchronized (mLock) {
@@ -212,7 +214,7 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
      *
      * @param items The items to add at the end of the array.
      */
-    public void addAll(T ... items) {
+    public void addAll(T... items) {
         synchronized (mLock) {
             if (mOriginalValues != null) {
                 Collections.addAll(mOriginalValues, items);
@@ -228,7 +230,7 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
      * Inserts the specified object at the specified index in the array.
      *
      * @param object The object to insert into the array.
-     * @param index The index at which the object must be inserted.
+     * @param index  The index at which the object must be inserted.
      */
     public void insert(@Nullable T object, int index) {
         synchronized (mLock) {
@@ -278,7 +280,7 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
      * Sorts the content of this adapter using the specified comparator.
      *
      * @param comparator The comparator used to sort the objects contained
-     *        in this adapter.
+     *                   in this adapter.
      */
     public void sort(@NonNull Comparator<? super T> comparator) {
         synchronized (mLock) {
@@ -303,7 +305,7 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
      * {@link #sort(Comparator)}) automatically call {@link #notifyDataSetChanged}.  If set to
      * false, caller must manually call notifyDataSetChanged() to have the changes
      * reflected in the attached view.
-     *
+     * <p>
      * The default is true, and calling notifyDataSetChanged()
      * resets the flag to true.
      *
@@ -321,7 +323,8 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
      *
      * @return The Context associated with this adapter.
      */
-    public @NonNull Context getContext() {
+    public @NonNull
+    Context getContext() {
         return mContext;
     }
 
@@ -331,7 +334,8 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
     }
 
     @Override
-    public @Nullable T getItem(int position) {
+    public @Nullable
+    T getItem(int position) {
         return mObjects.get(position);
     }
 
@@ -339,7 +343,6 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
      * Returns the position of the specified item in the array.
      *
      * @param item The item to retrieve the position of.
-     *
      * @return The position of the specified item.
      */
     public int getPosition(@Nullable T item) {
@@ -352,13 +355,15 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
     }
 
     @Override
-    public @NonNull View getView(int position, @Nullable View convertView,
-                                 @NonNull ViewGroup parent) {
+    public @NonNull
+    View getView(int position, @Nullable View convertView,
+                 @NonNull ViewGroup parent) {
         return createViewFromResource(mInflater, position, convertView, parent, mResource);
     }
 
-    private @NonNull View createViewFromResource(@NonNull LayoutInflater inflater, int position,
-                                                 @Nullable View convertView, @NonNull ViewGroup parent, int resource) {
+    private @NonNull
+    View createViewFromResource(@NonNull LayoutInflater inflater, int position,
+                                @Nullable View convertView, @NonNull ViewGroup parent, int resource) {
         final View view;
         final TextView text;
 
@@ -433,7 +438,8 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
     }
 
     @Override
-    public @Nullable Resources.Theme getDropDownViewTheme() {
+    public @Nullable
+    Resources.Theme getDropDownViewTheme() {
         return mDropDownInflater == null ? null : mDropDownInflater.getContext().getTheme();
     }
 
@@ -448,10 +454,9 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
      * Creates a new ArrayAdapter from external resources. The content of the array is
      * obtained through {@link android.content.res.Resources#getTextArray(int)}.
      *
-     * @param context The application's environment.
+     * @param context        The application's environment.
      * @param textArrayResId The identifier of the array to use as the data source.
-     * @param textViewResId The identifier of the layout used to create views.
-     *
+     * @param textViewResId  The identifier of the layout used to create views.
      * @return An ArrayAdapter<CharSequence>.
      */
 //    public static @NonNull
@@ -460,7 +465,6 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
 //        final CharSequence[] strings = context.getResources().getTextArray(textArrayResId);
 //        return new ArrayAdapter<>(context, textViewResId, 0, Arrays.asList(strings), true);
 //    }
-
     @Override
     public @NonNull
     Filter getFilter() {
@@ -534,7 +538,7 @@ public class CustomAdapter<T> extends BaseAdapter implements Filterable, ThemedS
                     final String valueText = value.toString().toLowerCase();
 
                     // First match against the whole, non-splitted value
-                    if (valueText.startsWith(prefixString)||valueText.contains(prefixString)) {
+                    if (valueText.startsWith(prefixString) || valueText.contains(prefixString)) {
                         newValues.add(value);
                     } else {
                         final String[] words = valueText.split(" ");

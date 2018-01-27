@@ -5,7 +5,6 @@ import com.example.abdelhaf.weather.domain.models.WeatherModel;
 import java.util.ArrayList;
 
 
-
 public interface WeatherCommunicator {
 
     ArrayList<WeatherModel> getWeatherItems();
@@ -14,5 +13,4 @@ public interface WeatherCommunicator {
 
     void openDetail(WeatherModel weatherModel);
 
-    void deleteModel(WeatherModel weatherModel);
 }

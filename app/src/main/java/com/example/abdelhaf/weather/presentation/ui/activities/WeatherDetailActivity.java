@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -21,6 +22,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.abdelhaf.weather.App;
 import com.example.abdelhaf.weather.R;
+import com.example.abdelhaf.weather.domain.controllers.Controller;
 import com.example.abdelhaf.weather.domain.controllers.communicator.WeatherCommunicator;
 import com.example.abdelhaf.weather.domain.controllers.communicator.WeatherDetailCommunicator;
 import com.example.abdelhaf.weather.domain.models.WeatherModel;
@@ -37,6 +40,7 @@ import com.example.abdelhaf.weather.presentation.ui.adapters.CitiesAdapter;
 import com.example.abdelhaf.weather.presentation.ui.adapters.CustomAdapter;
 import com.example.abdelhaf.weather.presentation.ui.adapters.WeatherAdapter;
 import com.example.abdelhaf.weather.presentation.utils.Constants;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -64,7 +68,7 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
     SharedPreferences sharedPreferences;
     @BindArray(R.array.capital_cities)
     String[] capital_cities;
-    ArrayList<WeatherModel>weatherModels;
+    ArrayList<WeatherModel> weatherModels;
     WeatherModel weatherModel;
     @BindView(R.id.recycle_view)
     RecyclerView recyclerView;
@@ -82,14 +86,16 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
     TextView description;
     @BindView(R.id.layout)
     LinearLayout layout;
-    String url="http://openweathermap.org/img/w/";
+    @BindView(R.id.add)
+    Button addToMainScreen;
+    String url = "http://openweathermap.org/img/w/";
+    ArrayList<WeatherModel> listOfModels;
 
-
-    String desc="";
+    String desc = "";
     WeatherAdapter weatherAdapter;
     String cityName;
-
-
+    boolean existModel = false;
+    WeatherModel savedModel;
 
 
     @Override
@@ -99,33 +105,47 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
         unbinder = ButterKnife.bind(this);
         App app = (App) getApplication();
         app.getApiComponent().inject(this);
-        weatherModel= (WeatherModel) getIntent().getSerializableExtra(Constants.WEATHER_MODEL);
-        cityName=(String) getIntent().getSerializableExtra(Constants.CITY);
+        //weatherModel = (WeatherModel) getIntent().getSerializableExtra(Constants.WEATHER_MODEL);
+        cityName = (String) getIntent().getSerializableExtra(Constants.CITY);
+        listOfModels = new ArrayList<>();
 
 
-        if(weatherModel!=null)
+
+        mainPresenter = new WeatherPresenterImpl(retrofit, cityName, null, null, WeatherDetailActivity.this);
+
+
+        listOfModels = getSavedData();
+        existModel = checkExist();
+        if(existModel)
         {
-            renderModel(weatherModel);
-            if(weatherModel.list!=null&&weatherModel.list.size()>0)
-            {
-                weatherAdapter = new WeatherAdapter(WeatherDetailActivity.this,this);
-                recyclerView.setAdapter(weatherAdapter);
-            }
-
+            addToMainScreen.setBackgroundResource(android.R.drawable.ic_input_delete);
         }else
         {
-            mainPresenter = new WeatherPresenterImpl(retrofit, cityName,null,null, WeatherDetailActivity.this);
-
+            addToMainScreen.setBackgroundResource(android.R.drawable.ic_input_add);
         }
+        addToMainScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(existModel)
+                {
+                   listOfModels.remove(savedModel);
+                    saveData(listOfModels);
+                    Toast.makeText(getBaseContext(), getString(R.string.city_deleted), Toast.LENGTH_LONG).show();
 
-//        if(weatherModel==null)
-//        {
-//            Toast.makeText(getBaseContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
-//        }
+                }else
+
+                if (weatherModel != null) {
+                    listOfModels.add(weatherModel);
+                    saveData(listOfModels);
+                    Toast.makeText(getBaseContext(), getString(R.string.city_added), Toast.LENGTH_LONG).show();
+
+                }
+            }
+        });
+
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(horizontalLayoutManager);
-
 
 
         Timer timer = new Timer();
@@ -141,8 +161,24 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
 
     @Override
     public void showConnectionError(Throwable throwable) {
-        Toast.makeText(getBaseContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
-        finish();
+//        Toast.makeText(getBaseContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+//        finish();
+
+        if (existModel == true) {
+
+
+            this.weatherModel = savedModel;
+            setWeatherDetailItems(weatherModel.list);
+            if (weatherModel.list != null && weatherModel.list.size() > 0) {
+                weatherAdapter = new WeatherAdapter(WeatherDetailActivity.this, this);
+                recyclerView.setAdapter(weatherAdapter);
+            }
+            renderModel(weatherModel);
+        } else {
+            Toast.makeText(getBaseContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
+
+            finish();
+        }
 
 
     }
@@ -150,22 +186,15 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
     @Override
     public void updateView(Object object) {
         WeatherModel weatherModel = (WeatherModel) object;
-        ArrayList<String> list = new ArrayList<String>();
-
-        this.weatherModel=weatherModel;
+        this.weatherModel = weatherModel;
+       existModel= checkExist();
         setWeatherDetailItems(weatherModel.list);
-        if(weatherModel.list!=null&&weatherModel.list.size()>0)
-        {
-            weatherAdapter = new WeatherAdapter(WeatherDetailActivity.this,this);
+        if (weatherModel.list != null && weatherModel.list.size() > 0) {
+            weatherAdapter = new WeatherAdapter(WeatherDetailActivity.this, this);
             recyclerView.setAdapter(weatherAdapter);
         }
         renderModel(weatherModel);
 
-       // weatherModels.add(weatherModel);
-
-        //setWeatherItems(weatherModels);
-
-        String x = "xyz";
     }
 
 
@@ -177,22 +206,7 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
         unbinder.unbind();
     }
 
-//    @Override
-//    public ArrayList<WeatherModel> getWeatherItems() {
-//        return weatherModels;
-//    }
-//
-//    @Override
-//    public void setWeatherItems(ArrayList<WeatherModel> weatherItems) {
-//
-//        this.weatherModels=weatherItems;
-//    }
 
-   // @Override
-//    public void openDetail( WeatherModel  weatherModel) {
-//
-//
-//    }
 
     @Override
     public ArrayList<WeatherModel.list> getWeatherDetailItems() {
@@ -202,8 +216,9 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
     @Override
     public void setWeatherDetailItems(ArrayList<WeatherModel.list> weatherItems) {
 
-        this.weatherModel.list=weatherItems;
+        this.weatherModel.list = weatherItems;
     }
+
     class MyTimer extends TimerTask {
 
         public void run() {
@@ -216,16 +231,15 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
                     Resources res = getResources();
                     final TypedArray myImages;
 
-                    if(desc.toLowerCase().contains(getString(R.string.clear_sky))) {
+                    if (desc.toLowerCase().contains(getString(R.string.clear_sky))) {
                         myImages = res.obtainTypedArray(R.array.images_clear_sky);
-                    }else if(desc.toLowerCase().contains(getString(R.string.cloud))) {
+                    } else if (desc.toLowerCase().contains(getString(R.string.cloud))) {
                         myImages = res.obtainTypedArray(R.array.images_cloudy);
-                    }else if(desc.toLowerCase().contains(getString(R.string.rain))) {
+                    } else if (desc.toLowerCase().contains(getString(R.string.rain))) {
                         myImages = res.obtainTypedArray(R.array.images_rain);
-                    }else if(desc.toLowerCase().contains(getString(R.string.snow))) {
+                    } else if (desc.toLowerCase().contains(getString(R.string.snow))) {
                         myImages = res.obtainTypedArray(R.array.images_snow);
-                    }else
-                    {
+                    } else {
                         myImages = res.obtainTypedArray(R.array.images);
                     }
                     final Random random = new Random();
@@ -233,27 +247,93 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
 
                     // Generate the drawableID from the randomInt
                     int drawableID = myImages.getResourceId(randomInt, -1);
-                    if(layout!=null)
-                    layout.setBackgroundResource(drawableID);
+                    if (layout != null)
+                        layout.setBackgroundResource(drawableID);
 
                 }
             });
-        }}
-
-
-        public  void renderModel(WeatherModel weatherModel)
-        {
-            city.setText(weatherModel.city.name);
-            if(weatherModel.list!=null&&weatherModel.list.size()>0)
-
-            degree.setText(weatherModel.list.get(0).main.temp+"°C");
-            humidity.setText(weatherModel.list.get(0).main.humidity+"%");
-            windSpeed.setText(weatherModel.list.get(0).wind.speed+"MPS");
-            description.setText(weatherModel.list.get(0).weather.get(0).description);
-            desc=weatherModel.list.get(0).weather.get(0).description;
-            url=url+weatherModel.list.get(0).weather.get(0).icon+".png";
-            Picasso.with(this).load(url)
-                    .fit()
-                    .into(icon);
         }
+    }
+
+
+    public void renderModel(WeatherModel weatherModel) {
+        city.setText(weatherModel.city.name);
+        if (weatherModel.list != null && weatherModel.list.size() > 0)
+
+            degree.setText(weatherModel.list.get(0).main.temp + "°C");
+        humidity.setText(weatherModel.list.get(0).main.humidity + "%");
+        windSpeed.setText(weatherModel.list.get(0).wind.speed + "MPS");
+        description.setText(weatherModel.list.get(0).weather.get(0).description);
+        desc = weatherModel.list.get(0).weather.get(0).description;
+        url = url + weatherModel.list.get(0).weather.get(0).icon + ".png";
+        Picasso.with(this).load(url)
+                .fit()
+                .into(icon);
+    }
+
+
+    public void saveData(ArrayList<WeatherModel> list) {
+        Gson gson = new Gson();
+
+
+        for (int k = 0; k < 5; k++) {
+            sharedPreferences.edit().putString("MODEL" + k, "").commit();
+        }
+        for (int i = 0; i < list.size(); i++) {
+            String json = gson.toJson(list.get(i));
+            sharedPreferences.edit().putString("MODEL" + i, json).commit();
+
+        }
+    }
+
+    public ArrayList<WeatherModel> getSavedData() {
+        ArrayList<WeatherModel> tmpModels = new ArrayList<>();
+        String json = "";
+        Gson gson = new Gson();
+        json = sharedPreferences.getString(Constants.MODEL0, null);
+        if (json != null && json.length() > 0) {
+            WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
+            tmpModels.add(weatherModel);
+        }
+
+
+        json = sharedPreferences.getString(Constants.MODEL1, null);
+        if (json != null && json.length() > 0) {
+            WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
+            tmpModels.add(weatherModel);
+        }
+
+        json = sharedPreferences.getString(Constants.MODEL2, null);
+        if (json != null && json.length() > 0) {
+            WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
+            tmpModels.add(weatherModel);
+        }
+
+        json = sharedPreferences.getString(Constants.MODEL3, null);
+        if (json != null && json.length() > 0) {
+            WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
+            tmpModels.add(weatherModel);
+        }
+
+        json = sharedPreferences.getString(Constants.MODEL4, null);
+        if (json != null && json.length() > 0) {
+            WeatherModel weatherModel = gson.fromJson(json, WeatherModel.class);
+            tmpModels.add(weatherModel);
+        }
+
+        return tmpModels;
+    }
+
+    public boolean checkExist() {
+        boolean exist = false;
+
+        for (int i = 0; i < listOfModels.size(); i++) {
+            if (listOfModels.get(i).city.name.equalsIgnoreCase(cityName)) {
+                exist = true;
+                savedModel=listOfModels.get(i);
+            }
+        }
+
+        return exist;
+    }
 }

@@ -41,6 +41,7 @@ public class WeatherModel implements Serializable {
 
 
         }
+
         public class weather implements Serializable {
             public int id;
             public String main;
@@ -49,10 +50,12 @@ public class WeatherModel implements Serializable {
 
 
         }
+
         public class clouds implements Serializable {
             public double all;
 
         }
+
         public class wind implements Serializable {
             public double speed;
             public double deg;
@@ -63,6 +66,7 @@ public class WeatherModel implements Serializable {
 
 
         }
+
         public class sys implements Serializable {
             public String pod;
 
@@ -73,9 +77,8 @@ public class WeatherModel implements Serializable {
     }
 
 
-
     public class city implements Serializable {
-        public double id;
+        public int id;
         public String name;
         public coord coord;
         public String country;
@@ -87,7 +90,6 @@ public class WeatherModel implements Serializable {
 
         }
     }
-
 
 
 }

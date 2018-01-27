@@ -34,11 +34,12 @@ public class CitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     Context context;
     View view;
     private final int DISPLAY_LENGTH = 2000;
+
     //constructor to initialize
-    public CitiesAdapter(WeatherCommunicator weatherCommunicator,Context context) {
+    public CitiesAdapter(WeatherCommunicator weatherCommunicator, Context context) {
         this.weatherCommunicator = weatherCommunicator;
         this.weatherModels = weatherCommunicator.getWeatherItems();
-        this.context=context;
+        this.context = context;
     }
 
     @Override
@@ -53,29 +54,22 @@ public class CitiesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         final Holder holder = (Holder) viewHolder;
 
-            holder.city.setText(weatherModels.get(position).city.name);
-            holder.degree.setText(String.valueOf(weatherModels.get(position).list.get(0).main.temp)+"°C");
+        holder.city.setText(weatherModels.get(position).city.name);
+        holder.degree.setText(String.valueOf(weatherModels.get(position).list.get(0).main.temp) + "°C");
 
-        String url="http://openweathermap.org/img/w/"+weatherModels.get(position).list.get(0).weather.get(0).icon+".png";
+        String url = "http://openweathermap.org/img/w/" + weatherModels.get(position).list.get(0).weather.get(0).icon + ".png";
         holder.icon.setBackground(null);
         Picasso.with(context).load(url)
                 .fit()
                 .into(holder.icon);
-holder.layout.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        weatherCommunicator.openDetail(weatherModels.get(position));
-    }
-});
-
-        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-
-                weatherCommunicator.deleteModel(weatherModels.get(position));
-                return true;
+            public void onClick(View v) {
+                weatherCommunicator.openDetail(weatherModels.get(position));
             }
         });
+
+
     }
 
     @Override
@@ -95,7 +89,6 @@ holder.layout.setOnClickListener(new View.OnClickListener() {
         TextView degree;
         @BindView(R.id.layout)
         RelativeLayout layout;
-
 
 
         public Holder(View view) {

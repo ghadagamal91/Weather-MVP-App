@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public interface WeatherDetailCommunicator {
 
-    public ArrayList<WeatherModel.list>  getWeatherDetailItems();
+    public ArrayList<WeatherModel.list> getWeatherDetailItems();
 
     void setWeatherDetailItems(ArrayList<WeatherModel.list> weatherItems);
 

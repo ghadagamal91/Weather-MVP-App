@@ -50,10 +50,10 @@ public class ApiModule {
                             Request request;
                             // Customize the request
 
-                                request = original.newBuilder()
-                                        .header("Content-Type", "application/json")
-                                        .header("x-api-key","6a361b3e8cbdae41aebf9ce467ce4c6c")
-                                        .build();
+                            request = original.newBuilder()
+                                    .header("Content-Type", "application/json")
+                                    .header("x-api-key", "6a361b3e8cbdae41aebf9ce467ce4c6c")
+                                    .build();
 
                             System.out.println(request.url().toString());
                             Response response = chain.proceed(request);

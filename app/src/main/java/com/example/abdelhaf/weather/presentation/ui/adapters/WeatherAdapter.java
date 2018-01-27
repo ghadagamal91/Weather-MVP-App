@@ -57,13 +57,31 @@ public class WeatherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis((long) list.get(position).dt);
-        String dateString = String.valueOf(calendar.get(Calendar.DAY_OF_WEEK));
-        String day=dateString.substring(0,2);
-        String hour = String.valueOf(calendar.getTime());
+        int dayInt = (calendar.get(calendar.DAY_OF_WEEK));
+        String hour= String.valueOf(calendar.get(calendar.getTime().getHours()));
+        String dayString="";
+
+        switch (dayInt) {
+            case Calendar.MONDAY:
+                dayString= "Monday";
+            case Calendar.TUESDAY:
+                dayString= "Tuesday";
+            case Calendar.WEDNESDAY:
+                dayString= "Wednesday";
+            case Calendar.THURSDAY:
+                dayString= "Thursday";
+            case Calendar.FRIDAY:
+                dayString= "Friday";
+            case Calendar.SATURDAY:
+                dayString= "Saturday";
+            case Calendar.SUNDAY:
+                dayString= "Sunday";
 
 
 
-        holder.day.setText(day);
+    }
+
+        holder.day.setText(dayString);
         holder.hour.setText(hour);
 
         String url = "http://openweathermap.org/img/w/" + list.get(position).weather.get(0).icon + ".png";

@@ -13,7 +13,7 @@ public class WeatherGroupPresenterImpl implements MainPresenter, ResponseCallbac
 
     public WeatherGroupPresenterImpl(Retrofit retrofit, String ids, PresenterCallBack presenterCallBack) {
         this.presenterCallBack = presenterCallBack;
-        responseCallback = new WeatherGroupInteractorImpl(retrofit,ids, this, presenterCallBack);
+        responseCallback = new WeatherGroupInteractorImpl(retrofit, ids, this, presenterCallBack);
     }
 
 
