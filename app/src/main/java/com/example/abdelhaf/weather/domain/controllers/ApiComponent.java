@@ -26,8 +26,7 @@ public interface ApiComponent {
     void inject(SplashScreenActivity splashScreenActivity);
 
     void inject(WeatherDetailActivity weatherDetailActivity);
-     void  inject(WeatherAppWidget weatherAppWidget);
-
+     
 
 }
 
