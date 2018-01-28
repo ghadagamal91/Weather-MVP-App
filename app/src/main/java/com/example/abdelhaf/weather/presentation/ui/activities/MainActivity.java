@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         recyclerView.setLayoutManager(mLayoutManager);
         weatherModels = new ArrayList<>();
         weatherModels = getSavedData();
-        String x = sharedPreferences.getString(Constants.MODEL0, "");
+
         if (sharedPreferences.getString(Constants.MODEL0, "").length() == 0) {
             boolean check = checkLocationPermission();
             if (check) {
@@ -400,9 +400,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         ArrayList<WeatherModel> savedWeatherData = getSavedData();
 
-            setWeatherItems(savedWeatherData);
-            citiesAdapter = new CitiesAdapter(MainActivity.this, this);
-            recyclerView.setAdapter(citiesAdapter);
+        setWeatherItems(savedWeatherData);
+        citiesAdapter = new CitiesAdapter(MainActivity.this, this);
+        recyclerView.setAdapter(citiesAdapter);
 
 
     }

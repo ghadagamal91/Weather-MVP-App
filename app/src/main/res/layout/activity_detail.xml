@@ -110,7 +110,11 @@
             android:textColor="@color/colorWhite" />
 
 
-
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
 
         <RelativeLayout
 
@@ -144,19 +148,7 @@
 
 
         </RelativeLayout>
-        <TextView
-            android:id="@+id/loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="18dp"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:text="@string/loading"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorWhite" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

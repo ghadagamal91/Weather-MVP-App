@@ -77,14 +77,13 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
     ArrayList<WeatherModel> listOfModels;
     @BindView(R.id.header)
     RelativeLayout header;
-
-    @BindView(R.id.loading)
-    TextView loading;
     String desc = "";
     WeatherAdapter weatherAdapter;
     String cityName;
     boolean existModel = false;
     WeatherModel savedModel;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
 
     @Override
@@ -103,9 +102,15 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
         listOfModels = getSavedData();
         existModel = checkExist();
         if (existModel) {
+            addToMainScreen.setVisibility(View.VISIBLE);
             addToMainScreen.setBackgroundResource(android.R.drawable.ic_input_delete);
         } else {
+            addToMainScreen.setVisibility(View.VISIBLE);
             addToMainScreen.setBackgroundResource(android.R.drawable.ic_input_add);
+        }
+        if(listOfModels.size()>=5&&existModel==false)
+        {
+            addToMainScreen.setVisibility(View.INVISIBLE);
         }
         addToMainScreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +121,7 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
                     listOfModels.remove(savedModel);
                     saveData(listOfModels);
                     Toast.makeText(getBaseContext(), getString(R.string.city_deleted), Toast.LENGTH_LONG).show();
+                    addToMainScreen.setVisibility(View.VISIBLE);
                     addToMainScreen.setBackgroundResource(android.R.drawable.ic_input_add);
 
                 } else if (weatherModel != null) {
@@ -123,6 +129,7 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
                     listOfModels.add(weatherModel);
                     saveData(listOfModels);
                     Toast.makeText(getBaseContext(), getString(R.string.city_added), Toast.LENGTH_LONG).show();
+                    addToMainScreen.setVisibility(View.VISIBLE);
                     addToMainScreen.setBackgroundResource(android.R.drawable.ic_input_delete);
                 }
             }
@@ -137,22 +144,31 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
         MyTimer myTimer = new MyTimer();
         timer.schedule(myTimer, 5000, 5000);
 
+
     }
 
     @Override
     public void showLoading(boolean show) {
 
+        if(show)
+        {
+            if(progressBar!=null)
+            progressBar.setVisibility(View.VISIBLE);
+        }else
+        {
+            if(progressBar!=null)
+            progressBar.setVisibility(View.GONE);
+        }
 
     }
 
     @Override
     public void showConnectionError(Throwable throwable) {
 
+        if(progressBar!=null)
+            progressBar.setVisibility(View.GONE);
 
-        loading.setText("");
         if (existModel == true) {
-
-
             this.weatherModel = savedModel;
             setWeatherDetailItems(weatherModel.list);
             if (weatherModel.list != null && weatherModel.list.size() > 0) {
@@ -244,7 +260,8 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
         city.setText(weatherModel.city.name);
         if (weatherModel.list != null && weatherModel.list.size() > 0)
 
-            loading.setText("");
+            if(progressBar!=null)
+            progressBar.setVisibility(View.GONE);
         degree.setText(weatherModel.list.get(0).main.temp + "°C");
         humidity.setText(weatherModel.list.get(0).main.humidity + "%");
         windSpeed.setText(weatherModel.list.get(0).wind.speed + "MPS");
