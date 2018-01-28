@@ -6,6 +6,7 @@ import com.example.abdelhaf.weather.domain.module.AppModule;
 import com.example.abdelhaf.weather.presentation.ui.activities.MainActivity;
 import com.example.abdelhaf.weather.presentation.ui.activities.SplashScreenActivity;
 import com.example.abdelhaf.weather.presentation.ui.activities.WeatherDetailActivity;
+import com.example.abdelhaf.weather.presentation.ui.widget.WeatherAppWidget;
 
 import dagger.Component;
 import dagger.Provides;
@@ -21,9 +22,11 @@ public interface ApiComponent {
 
 
     void inject(MainActivity mainActivity);
-    void inject(SplashScreenActivity splashScreenActivity);
-    void inject(WeatherDetailActivity weatherDetailActivity);
 
+    void inject(SplashScreenActivity splashScreenActivity);
+
+    void inject(WeatherDetailActivity weatherDetailActivity);
+     void  inject(WeatherAppWidget weatherAppWidget);
 
 
 }

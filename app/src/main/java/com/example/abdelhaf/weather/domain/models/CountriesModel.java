@@ -18,11 +18,5 @@ public class CountriesModel implements Serializable {
         public ArrayList<String> cities;
 
 
-//        public class city implements Serializable {
-//            public String name;
-//
-//
-//
-//        }}
     }
 }

@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     String provider;
     Geocoder geocoder;
     String firstCity;
-    String cityName;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public double longitude, latitude;
     ArrayList<WeatherModel> weatherModels;
@@ -123,15 +122,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
             url_part = url_part.replaceFirst(",", "");
 
-            if (weatherModels.size() == 1) {
-                mainPresenter = new WeatherPresenterImpl(retrofit, weatherModels.get(0).city.name, null, null, MainActivity.this);
-
-            } else
-                mainPresenter = new WeatherGroupPresenterImpl(retrofit, url_part, MainActivity.this);
+//            if (weatherModels.size() == 1) {
+//                mainPresenter = new WeatherPresenterImpl(retrofit, weatherModels.get(0).city.name, null, null, MainActivity.this);
+//
+//            } else
+            mainPresenter = new WeatherGroupPresenterImpl(retrofit, url_part, MainActivity.this);
 
         }
         search_box.setThreshold(1);
-        search_box.setAdapter(new CustomAdapter<String>(this.getApplication(), android.R.layout.simple_spinner_dropdown_item, capital_cities));
+
+        search_box.setAdapter(new CustomAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, capital_cities));
 
         search_box.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,8 +156,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                 Intent intent = new Intent(MainActivity.this, WeatherDetailActivity.class);
                 firstCity = search_box.getText().toString();
-                search_box.setText("");
-                intent.putExtra(Constants.CITY, cityName);
+                intent.putExtra(Constants.CITY, search_box.getText().toString());
                 startActivity(intent);
 
 
@@ -267,10 +266,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 } else {
 
                     firstCity = "London";
-                    mainPresenter = new WeatherPresenterImpl(retrofit, firstCity, null, null, MainActivity.this);
+                    mainPresenter = new WeatherPresenterImpl(retrofit, search_box.getText().toString(), null, null, MainActivity.this);
 
                 }
-
 
 
                 return;
@@ -296,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 onLocationChanged(location);
 
             if (latitude != 0.0 && longitude != 0.0) {
-                mainPresenter = new WeatherPresenterImpl(retrofit, cityName, String.valueOf(latitude), String.valueOf(longitude), MainActivity.this);
+                mainPresenter = new WeatherPresenterImpl(retrofit, search_box.getText().toString(), String.valueOf(latitude), String.valueOf(longitude), MainActivity.this);
 
             } else {
                 Toast.makeText(getBaseContext(), getString(R.string.connection_error), Toast.LENGTH_LONG).show();
@@ -401,11 +399,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void updateList() {
 
         ArrayList<WeatherModel> savedWeatherData = getSavedData();
-        if (savedWeatherData.size() > 0) {
+
             setWeatherItems(savedWeatherData);
             citiesAdapter = new CitiesAdapter(MainActivity.this, this);
             recyclerView.setAdapter(citiesAdapter);
-        }
+
 
     }
 

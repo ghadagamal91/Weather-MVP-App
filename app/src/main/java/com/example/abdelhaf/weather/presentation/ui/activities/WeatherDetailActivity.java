@@ -3,25 +3,14 @@ package com.example.abdelhaf.weather.presentation.ui.activities;
 import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,22 +21,16 @@ import android.widget.Toast;
 
 import com.example.abdelhaf.weather.App;
 import com.example.abdelhaf.weather.R;
-import com.example.abdelhaf.weather.domain.controllers.Controller;
-import com.example.abdelhaf.weather.domain.controllers.communicator.WeatherCommunicator;
 import com.example.abdelhaf.weather.domain.controllers.communicator.WeatherDetailCommunicator;
 import com.example.abdelhaf.weather.domain.models.WeatherModel;
 import com.example.abdelhaf.weather.presentation.presenters.MainPresenter;
 import com.example.abdelhaf.weather.presentation.presenters.impl.WeatherPresenterImpl;
-import com.example.abdelhaf.weather.presentation.ui.adapters.CitiesAdapter;
-import com.example.abdelhaf.weather.presentation.ui.adapters.CustomAdapter;
 import com.example.abdelhaf.weather.presentation.ui.adapters.WeatherAdapter;
 import com.example.abdelhaf.weather.presentation.utils.Constants;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -92,10 +75,11 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
     Button addToMainScreen;
     String url = "http://openweathermap.org/img/w/";
     ArrayList<WeatherModel> listOfModels;
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
     @BindView(R.id.header)
     RelativeLayout header;
+
+    @BindView(R.id.loading)
+    TextView loading;
     String desc = "";
     WeatherAdapter weatherAdapter;
     String cityName;
@@ -113,7 +97,6 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
         //weatherModel = (WeatherModel) getIntent().getSerializableExtra(Constants.WEATHER_MODEL);
         cityName = (String) getIntent().getSerializableExtra(Constants.CITY);
         listOfModels = new ArrayList<>();
-
 
         mainPresenter = new WeatherPresenterImpl(retrofit, cityName, null, null, WeatherDetailActivity.this);
 
@@ -159,15 +142,14 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
     @Override
     public void showLoading(boolean show) {
 
-        if(progressBar!=null)
-            progressBar.setVisibility(View.VISIBLE);
+
     }
 
     @Override
     public void showConnectionError(Throwable throwable) {
 
-        if(progressBar!=null)
-            progressBar.setVisibility(View.GONE);
+
+        loading.setText("");
         if (existModel == true) {
 
 
@@ -262,8 +244,8 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
         city.setText(weatherModel.city.name);
         if (weatherModel.list != null && weatherModel.list.size() > 0)
 
-
-            degree.setText(weatherModel.list.get(0).main.temp + "°C");
+            loading.setText("");
+        degree.setText(weatherModel.list.get(0).main.temp + "°C");
         humidity.setText(weatherModel.list.get(0).main.humidity + "%");
         windSpeed.setText(weatherModel.list.get(0).wind.speed + "MPS");
         description.setText(weatherModel.list.get(0).weather.get(0).description);
@@ -272,10 +254,10 @@ public class WeatherDetailActivity extends AppCompatActivity implements WeatherD
         Picasso.with(this).load(url)
                 .fit()
                 .into(icon);
-        if(progressBar!=null)
-            progressBar.setVisibility(View.GONE);
-        if (header != null)
+
+        if (header != null) {
             header.setVisibility(View.VISIBLE);
+        }
     }
 
 

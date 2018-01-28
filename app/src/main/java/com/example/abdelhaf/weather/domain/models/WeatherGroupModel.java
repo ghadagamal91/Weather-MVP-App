@@ -25,8 +25,6 @@ public class WeatherGroupModel implements Serializable {
         public ArrayList<weather> weather;
 
 
-
-
         public class main implements Serializable {
             public double temp;
             public double temp_min;
@@ -48,7 +46,6 @@ public class WeatherGroupModel implements Serializable {
 
 
         }
-
 
 
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weather</string>
+    <string name="app_name">Weather App</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
@@ -13,10 +13,11 @@
     <string name="cloud">cloud</string>
     <string name="rain">rain</string>
     <string name="snow">snow</string>
-    <string name="alert_Message">Add the City To Main Screen?</string>
     <string name="connection_error">Connection Error</string>
     <string name="city_added">The City Is Added To Main Screen</string>
     <string name="city_deleted">The City Is Deleted From Main Screen</string>
+    <string name="add_widget">Add widget</string>
+    <string name="loading">Loading.........</string>
 
 
 </resources>

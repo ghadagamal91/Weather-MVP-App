@@ -1,4 +1,5 @@
 package com.example.abdelhaf.weather.domain.controllers;
+
 import com.example.abdelhaf.weather.domain.models.WeatherGroupModel;
 import com.example.abdelhaf.weather.domain.models.WeatherModel;
 
